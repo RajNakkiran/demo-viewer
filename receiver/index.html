@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Events Viewer</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+
+        body {
+            font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
+            margin: 2em;
+        }
+
+        h1 {
+            font-style: italic;
+            color: #373fff;
+        }
+
+    </style>
+
+
+</head>
+<body>
+<h1>EVENTS VIEWER</h1>
+
+<table border='1' id='mytable' width='95%'>
+    <col width="10%">
+    <col width="20%">
+    <col width="20%">
+    <col width="20%">
+    <col width="20%">
+
+    <thead>
+    <tr>
+        <th>Time</th>
+        <th>AWS</th>
+        <th>DEVICE</th>
+        <th>QTRICS</th>
+        <th>CA SERVER</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    </tbody>
+</table>
+
+</body>
+
+<script type="text/javascript">
+    // const url = 'ws://localhost:8080'
+    const url = 'ws://138.197.212.78:8080'
+    const connection = new WebSocket(url)
+    const scroll = setInterval(function(){ window.scrollBy(0,1000); }, 2000);
+
+    // AWS, DEV, QTR, CAS are valid prefixes for log messages
+    function addRow(c1, c2, c3, c4) {
+        if (!document.getElementsByTagName) return;
+        tabBody = document.getElementsByTagName("tbody").item(0);
+        row = document.createElement("tr");
+        cell0 = document.createElement("td");
+        cell1 = document.createElement("td");
+        cell2 = document.createElement("td");
+        cell3 = document.createElement("td");
+        cell4 = document.createElement("td");
+
+        var now = new Date();
+
+        const timeStr  = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + "  -  " + now.getMilliseconds();
+        textnode0 = document.createTextNode(timeStr);
+        textnode1 = document.createTextNode(c1);
+        textnode2 = document.createTextNode(c2);
+        textnode3 = document.createTextNode(c3);
+        textnode4 = document.createTextNode(c4);
+        cell0.appendChild(textnode0);
+        cell1.appendChild(textnode1);
+        cell2.appendChild(textnode2);
+        cell3.appendChild(textnode3);
+        cell4.appendChild(textnode4);
+        row.appendChild(cell0);
+        row.appendChild(cell1);
+        row.appendChild(cell2);
+        row.appendChild(cell3);
+        row.appendChild(cell4);
+        tabBody.appendChild(row);
+    }
+
+    connection.onopen = () => {
+        connection.send('hey from websocket client ')
+    }
+
+    connection.onerror = (error) => {
+        console.log(`WebSocket error: ${error}`)
+    }
+
+    connection.onmessage = (e) => {
+        console.log('Got Websocket message : ' + e.data);
+        const msg = e.data;
+        if (msg.startsWith("AWS")) {
+            addRow(msg.substr(4), " ", " ", " ");
+        } else if (msg.startsWith("DEV")) {
+            addRow(" ", msg.substr(4), " ", " ");
+        } else if (msg.startsWith("QTR")) {
+            addRow(" ", " ", msg.substr(4), " ");
+        } else if (msg.startsWith("CAS")) {
+            addRow(" ", " ", " ", msg.substr(4));
+        } else {
+            console.log('Skipped unknown message : ' + e.data);
+        }
+
+
+    }
+</script>
+
+</html>

@@ -1,0 +1,11 @@
+curl http://138.197.212.78/?LOG=DEV:send-UID-SN
+curl http://138.197.212.78/?LOG=QTR:reply-OTP
+curl http://138.197.212.78/?LOG=DEV:send-CSR-OTP-SN-UID
+curl http://138.197.212.78/?LOG=CAS:isssue-CERT
+curl http://138.197.212.78/?LOG=DEV:save-CERT
+curl http://138.197.212.78/?LOG=DEV:connect-with-CERT
+curl http://138.197.212.78/?LOG=AWS:provision-device-policy
+curl http://138.197.212.78/?LOG=DEV:send-recive-MQTT-msgs
+curl http://138.197.212.78/?LOG=AWS:send-recive-MQTT-msgs
+curl http://138.197.212.78/?LOG=DEV:send-recive-MQTT-msgs
+curl http://138.197.212.78/?LOG=AWS:send-recive-MQTT-msgs
